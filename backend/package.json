@@ -1,0 +1,20 @@
+{
+  "name": "medicare-backend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "MediCare coursework API backed by Oracle PL/SQL",
+  "engines": { "node": ">=22.14.0" },
+  "scripts": {
+    "start": "node --env-file=.env src/server.js",
+    "dev": "node --watch --env-file=.env src/server.js",
+    "check:db": "node --env-file=.env scripts/check-db.js",
+    "smoke": "node scripts/smoke.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "cors": "2.8.6",
+    "express": "5.3.0",
+    "oracledb": "26.0.0"
+  }
+}

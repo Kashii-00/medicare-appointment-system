@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "ORA-20110",
+    "message": "Payment exceeds the outstanding balance.",
+    "request_id": "278784b9-71f8-46f1-a199-11efbe320ecd"
+  }
+}

@@ -1,0 +1,118 @@
+erDiagram
+    direction TB
+    SPECIALIZATIONS {
+        NUMBER specialization_id PK
+        VARCHAR2 specialization_name UK
+        VARCHAR2 description
+    }
+    DOCTORS {
+        NUMBER doctor_id PK
+        VARCHAR2 registration_no UK
+        VARCHAR2 first_name
+        VARCHAR2 last_name
+        VARCHAR2 phone
+        VARCHAR2 email
+        CHAR active_flag
+        TIMESTAMP created_at
+    }
+    DOCTOR_SPECIALIZATIONS {
+        NUMBER doctor_id PK, FK
+        NUMBER specialization_id PK, FK
+    }
+    PATIENTS {
+        NUMBER patient_id PK
+        VARCHAR2 first_name
+        VARCHAR2 last_name
+        DATE date_of_birth
+        VARCHAR2 gender
+        VARCHAR2 phone
+        VARCHAR2 email
+        VARCHAR2 address
+        CHAR active_flag
+        TIMESTAMP created_at
+    }
+    CLINICS {
+        NUMBER clinic_id PK
+        VARCHAR2 clinic_name
+        VARCHAR2 facility_type
+        VARCHAR2 address
+        VARCHAR2 city
+        VARCHAR2 phone
+        CHAR active_flag
+    }
+    MEDICINES {
+        NUMBER medicine_id PK
+        VARCHAR2 medicine_name
+        VARCHAR2 strength
+        VARCHAR2 dosage_form
+        CHAR active_flag
+    }
+    DOCTOR_SESSIONS {
+        NUMBER session_id PK
+        NUMBER doctor_id FK
+        NUMBER clinic_id FK
+        TIMESTAMP start_time
+        TIMESTAMP end_time
+        NUMBER slot_minutes
+        NUMBER consultation_fee
+        VARCHAR2 status
+    }
+    APPOINTMENTS {
+        NUMBER appointment_id PK
+        NUMBER session_id FK
+        NUMBER patient_id FK
+        NUMBER slot_no
+        NUMBER agreed_fee
+        VARCHAR2 status
+        TIMESTAMP booked_at
+        TIMESTAMP cancelled_at
+        VARCHAR2 cancellation_reason
+    }
+    CONSULTATIONS {
+        NUMBER consultation_id PK
+        NUMBER appointment_id FK, UK
+        TIMESTAMP consulted_at
+        VARCHAR2 symptoms
+        VARCHAR2 diagnosis
+        CLOB clinical_notes
+        DATE follow_up_date
+    }
+    PRESCRIPTIONS {
+        NUMBER prescription_id PK
+        NUMBER consultation_id FK, UK
+        TIMESTAMP issued_at
+        VARCHAR2 notes
+    }
+    PRESCRIPTION_ITEMS {
+        NUMBER prescription_id PK, FK
+        NUMBER line_no PK
+        NUMBER medicine_id FK
+        VARCHAR2 dosage
+        VARCHAR2 frequency
+        NUMBER duration_days
+        VARCHAR2 instructions
+    }
+    PAYMENTS {
+        NUMBER payment_id PK
+        NUMBER appointment_id FK
+        NUMBER amount
+        VARCHAR2 payment_method
+        VARCHAR2 status
+        TIMESTAMP paid_at
+        VARCHAR2 reference_no UK
+    }
+    DOCTORS ||--o{ DOCTOR_SPECIALIZATIONS : has
+    SPECIALIZATIONS ||--o{ DOCTOR_SPECIALIZATIONS : classifies
+    DOCTORS ||--o{ DOCTOR_SESSIONS : holds
+    CLINICS ||--o{ DOCTOR_SESSIONS : hosts
+    PATIENTS ||--o{ APPOINTMENTS : books
+    DOCTOR_SESSIONS ||--o{ APPOINTMENTS : contains
+    APPOINTMENTS ||--o| CONSULTATIONS : results_in
+    CONSULTATIONS ||--o| PRESCRIPTIONS : generates
+    PRESCRIPTIONS ||--o{ PRESCRIPTION_ITEMS : contains
+    MEDICINES ||--o{ PRESCRIPTION_ITEMS : identifies
+    APPOINTMENTS ||--o{ PAYMENTS : receives
+
+%% MEDICINES has one composite UNIQUE(medicine_name, strength, dosage_form).
+%% Physical cardinalities shown; MC_API requires at least one prescription item.
+%% API validation requires at least one specialization on doctor create/full edit.
